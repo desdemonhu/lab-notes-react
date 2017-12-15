@@ -17,12 +17,9 @@ class CreateNoteForm extends React.Component {
     this.state = {value: '',
                   list: []
                 };
-
-    this.addNote = this.addNote.bind(this);
-    this.updateState = this.updateState.bind(this);
   }
 
-  addNote(){
+  addNote = () => {
     let note =
       {
         id: uuid.v1(),
@@ -33,10 +30,21 @@ class CreateNoteForm extends React.Component {
     this.setState(state => {
       return {list: this.state.list.concat(note)};
     });
+    this.setState(state => {
+      return {value: ''};
+    });
   }
 
-  updateState(event){
+  updateState = (event) => {
     this.setState({value: event.target.value})
+  }
+
+  deleteNote = (event) => {
+    let newList = this.state.list.filter(note => note.id !== event.target.value)
+
+    this.setState(state => {
+      return {list: newList};
+    })
   }
 
   render(){
@@ -49,12 +57,12 @@ class CreateNoteForm extends React.Component {
         </input>
         <button onClick={this.addNote}>Add Note</button>
         <ul>
-          {this.state.list.map((note) =>
+          {this.state.list.map(note =>
             (
               <li>
               <h3>Note: {note.id}</h3>
               <p>{note.content}</p>
-              <button>Delete Note</button>
+              <button value={note.id} onClick={this.deleteNote}>Delete Note</button>
             </li>
           )
         )}
