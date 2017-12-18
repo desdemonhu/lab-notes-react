@@ -12,11 +12,21 @@ class Header extends React.Component {
 }
 
 class CreateNoteForm extends React.Component {
-  constructor(content){
-    super(content);
-    this.state = {value: '',
-                  list: []
+  constructor(props){
+    super(props);
+    this.state = {
+                  value: ''
                 };
+  }
+
+  updateState = (event) => {
+    this.setState({value: event.target.value})
+  }
+
+///Clears form when note is added
+  clearForm = (event) => {
+    this.setState({value: ''
+                  })
   }
 
   addNote = () => {
@@ -27,25 +37,9 @@ class CreateNoteForm extends React.Component {
         completed: false,
         content: this.state.value
       }
-    this.setState(state => {
-      return {list: this.state.list.concat(note)};
-    });
-    this.setState(state => {
-      return {value: ''};
-    });
-  }
-
-  updateState = (event) => {
-    this.setState({value: event.target.value})
-  }
-
-  deleteNote = (event) => {
-    let newList = this.state.list.filter(note => note.id !== event.target.value)
-
-    this.setState(state => {
-      return {list: newList};
-    })
-  }
+      this.props.postNote(note);
+      this.clearForm();
+    }
 
   render(){
     return (
@@ -56,29 +50,57 @@ class CreateNoteForm extends React.Component {
           onChange={this.updateState}>
         </input>
         <button onClick={this.addNote}>Add Note</button>
-        <ul>
-          {this.state.list.map(note =>
-            (
-              <li>
-              <h3>Note: {note.id}</h3>
-              <p>{note.content}</p>
-              <button value={note.id} onClick={this.deleteNote}>Delete Note</button>
-            </li>
-          )
-        )}
-        </ul>
       </div>
     )
   }
 }
 
+class NoteItem extends React.Component {
+  constructor(props){
+    super(props)
+  }
+  render(){
+    return (
+        <li>
+        <h3>Note: {this.props.note.id}</h3>
+        <p>{this.props.note.content}</p>
+        <button value={this.props.note.id} onClick={this.props.deleteNote}>Delete Note</button>
+      </li>
+    )
+  }
+}
 
 class App extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+                  list: []
+                };
+  }
+
+postNote = (note) => {
+  this.setState(state => {
+    return {list: this.state.list.concat(note)};
+  })
+}
+
+  deleteNote = (event) => {
+    let newList = this.state.list.filter(note => note.id !== event.target.value)
+    this.setState(state => {
+      return {list: newList};
+    })
+  }
+
   render(){
     return (
       <div>
         <Header />
-        <CreateNoteForm />
+        <CreateNoteForm postNote={this.postNote}/>
+        <ul>
+          {this.state.list.map((note) =>
+            <NoteItem  note={note} deleteNote={this.deleteNote}/>
+        )}
+        </ul>
       </div>
     )
   }
