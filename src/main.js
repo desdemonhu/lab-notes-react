@@ -23,7 +23,6 @@ class CreateNoteForm extends React.Component {
     this.setState({value: event.target.value})
   }
 
-///Clears form when note is added
   clearForm = (event) => {
     this.setState({value: ''
                   })
@@ -156,7 +155,7 @@ postNote = (note) => {
         <CreateNoteForm postNote={this.postNote}/>
         <ul>
           {this.state.list.map((note) =>
-            <NoteItem  note={note} deleteNote={this.deleteNote} noteUpdateField={this.noteUpdateField} upd/>
+            <NoteItem note={note} deleteNote={this.deleteNote} noteUpdateField={this.noteUpdateField} upd/>
         )}
         </ul>
       </div>
