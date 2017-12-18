@@ -124,7 +124,7 @@ class App extends React.Component {
 
 postNote = (note) => {
   this.setState(state => {
-    return {list: this.state.list.concat(note)};
+    return {list: [...state.list, note]};
   })
 }
 
